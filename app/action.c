@@ -42,6 +42,8 @@
 #include "settings.h"
 #include "ui/inputbox.h"
 #include "ui/ui.h"
+#include "ui/helper.h"
+#include "image_boot.h"
 
 #ifdef ENABLE_FEAT_F4HWN_SCREENSHOT
   #include "screenshot.h"
@@ -113,6 +115,12 @@ void (*action_opt_table[])(void) = {
 	[ACTION_OPT_BACKLIGHT] = &ACTION_BackLight,
 #else
 	[ACTION_OPT_RXMODE] = &FUNCTION_NOP,
+#endif
+
+#ifdef ENABLE_BITMAP_WELCOME
+	[ACTION_OPT_IMAGE] = &APP_Image,
+#else
+	[ACTION_OPT_IMAGE] = &FUNCTION_NOP,
 #endif
 };
 

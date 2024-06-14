@@ -31,5 +31,10 @@ void     APP_Update(void);
 void     APP_TimeSlice10ms(void);
 void     APP_TimeSlice500ms(void);
 
+
+#if defined ENABLE_BITMAP_WELCOME
+void APP_Image(void);
+#endif
+
 #endif
 

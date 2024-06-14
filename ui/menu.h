@@ -92,7 +92,7 @@ enum
 	MENU_D_HOLD,
 #endif
 	MENU_D_PRE,
-#ifdef ENABLE_DTMF_CALLING	
+#ifdef ENABLE_DTMF_CALLING
 	MENU_D_DCD,
 	MENU_D_LIST,
 #endif
@@ -172,11 +172,7 @@ extern const char        gSubMenu_D_RSP[4][11];
 #endif
 
 extern const char* const gSubMenu_PTT_ID[5];
-#ifdef ENABLE_FEAT_F4HWN
-	extern const char        gSubMenu_PONMSG[5][8];
-#else
-	extern const char        gSubMenu_PONMSG[4][8];
-#endif
+extern const char        gSubMenu_PONMSG[5][8];
 extern const char        gSubMenu_ROGER[3][6];
 extern const char        gSubMenu_RESET[2][4];
 extern const char* const gSubMenu_F_LOCK[F_LOCK_LEN];
@@ -191,13 +187,13 @@ extern const char 		 gSubMenu_BATTYP[2][9];
 typedef struct {char* name; uint8_t id;} t_sidefunction;
 extern const uint8_t 		 gSubMenu_SIDEFUNCTIONS_size;
 extern const t_sidefunction gSubMenu_SIDEFUNCTIONS[];
-				         
+
 extern bool              gIsInSubMenu;
-				         
+
 extern uint8_t           gMenuCursor;
 
 extern int32_t           gSubMenuSelection;
-				         
+
 extern char              edit_original[17];
 extern char              edit[17];
 extern int               edit_index;

@@ -266,6 +266,7 @@ const char gSubMenu_PONMSG[][8] =
 #endif
 	"MESSAGE",
 	"VOLTAGE",
+	"IMAGE",
 	"NONE"
 };
 
@@ -405,6 +406,11 @@ const t_sidefunction gSubMenu_SIDEFUNCTIONS[] =
 	{"MAIN ONLY",   	ACTION_OPT_MAINONLY},
 	{"PTT",  	    	ACTION_OPT_PTT},
 	{"WIDE\nNARROW", 	ACTION_OPT_WN},
+#ifdef ENABLE_SPECTRUM
+	{"SPECTRUM",         ACTION_OPT_SPECTRUM},
+#endif
+#ifdef ENABLE_BITMAP_WELCOME
+	{"IMAGE",            ACTION_OPT_IMAGE}
 #endif
 };
 
@@ -655,7 +661,7 @@ void UI_DisplayMenu(void)
 			}
 			else
 			{
-				sprintf(String, "%s", "ON");	
+				sprintf(String, "%s", "ON");
 			}
 
 			if(BACKLIGHT_GetBrightness() < 4)

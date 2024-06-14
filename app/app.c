@@ -71,6 +71,8 @@
 #include "ui/menu.h"
 #include "ui/status.h"
 #include "ui/ui.h"
+#include "ui/helper.h"
+#include "image_boot.h"
 
 static bool flagSaveVfo;
 static bool flagSaveSettings;
@@ -2109,3 +2111,88 @@ Skip:
 
 	gUpdateDisplay = true;
 }
+
+
+#ifdef ENABLE_BITMAP_WELCOME
+
+typedef struct {
+  KEY_Code_t current;
+  KEY_Code_t prev;
+  uint8_t counter;
+} APP_KeyboardState;
+
+
+static KEY_Code_t GetKey() {
+  KEY_Code_t btn = KEYBOARD_Poll();
+  if (btn == KEY_INVALID && !GPIO_CheckBit(&GPIOC->DATA, GPIOC_PIN_PTT)) {
+    btn = KEY_PTT;
+  }
+  return btn;
+}
+
+static KEY_Code_t GetKeyFiltered() {
+  static APP_KeyboardState kbd = {
+	.current = KEY_INVALID,
+	.prev = KEY_INVALID,
+	.counter = 0
+  };
+  kbd.prev = kbd.current;
+  kbd.current = GetKey();
+
+  KEY_Code_t filtered_kbd = KEY_INVALID;
+
+  if (kbd.current != kbd.prev) {
+	filtered_kbd = kbd.current;
+  }
+  return filtered_kbd;
+}
+
+
+void APP_Image(void)
+{
+	UI_DisplayClear();
+	uint8_t current_brightness = BACKLIGHT_GetBrightness();
+	bool brightness_wiggle = false;
+	bool increase_brightness = true;
+
+	bool STATE_image = true;
+	while(STATE_image){
+		// read inputs
+		switch (GetKeyFiltered()) {
+		case KEY_EXIT:
+			STATE_image = false;
+			break;
+		case KEY_MENU:
+			brightness_wiggle = !brightness_wiggle;
+			break;
+		default:
+			break;
+		}
+
+		// handle wiggle if requested
+		if (brightness_wiggle) {
+			if (increase_brightness){
+				if (current_brightness < gEeprom.BACKLIGHT_MAX) {
+					current_brightness += 1;
+				} else {
+					increase_brightness = false;
+				}
+			} else {
+				if (current_brightness > gEeprom.BACKLIGHT_MIN) {
+					current_brightness -= 1;
+				} else {
+					increase_brightness = true;
+				}
+			}
+			BACKLIGHT_SetBrightness(current_brightness);
+		}
+		
+		// render image
+		UI_DrawFullScreenImage((uint8_t*)BITMAP_ECRAN_ACCEUIL);
+		ST7565_BlitStatusLine();
+		ST7565_BlitFullScreen();
+
+	    SYSTEM_DelayMs(100);
+	}
+}
+#endif

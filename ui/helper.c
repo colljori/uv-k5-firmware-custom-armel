@@ -282,6 +282,13 @@ void UI_DrawRectangleBuffer(uint8_t (*buffer)[128], int16_t x1, int16_t y1, int1
 	UI_DrawLineBuffer(buffer, x1,y2, x2,y2, black);
 }
 
+void UI_DrawFullScreenImage(uint8_t bitmap[1024])
+{
+    // start with the status line
+	memcpy(gStatusLine, bitmap, LCD_WIDTH);
+    // and then the frame lines
+	memcpy(gFrameBuffer, bitmap + LCD_WIDTH, LCD_WIDTH * FRAME_LINES);
+}
 
 void UI_DisplayPopup(const char *string)
 {

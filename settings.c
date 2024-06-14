@@ -98,10 +98,10 @@ void SETTINGS_InitEEPROM(void)
 
 		gEeprom.FM_Band = fmCfg.band;
 		//gEeprom.FM_Space = fmCfg.space;
-		gEeprom.FM_SelectedFrequency = 
-			(fmCfg.selFreq >= BK1080_GetFreqLoLimit(gEeprom.FM_Band) && fmCfg.selFreq <= BK1080_GetFreqHiLimit(gEeprom.FM_Band)) ? 
+		gEeprom.FM_SelectedFrequency =
+			(fmCfg.selFreq >= BK1080_GetFreqLoLimit(gEeprom.FM_Band) && fmCfg.selFreq <= BK1080_GetFreqHiLimit(gEeprom.FM_Band)) ?
 				fmCfg.selFreq : BK1080_GetFreqLoLimit(gEeprom.FM_Band);
-			
+
 		gEeprom.FM_SelectedChannel = fmCfg.selChn;
 		gEeprom.FM_IsMrMode        = fmCfg.isMrMode;
 	}
@@ -122,7 +122,7 @@ void SETTINGS_InitEEPROM(void)
 	gEeprom.SCAN_RESUME_MODE             = (Data[5] < 3)              ? Data[5] : SCAN_RESUME_CO;
 	gEeprom.AUTO_KEYPAD_LOCK             = (Data[6] < 2)              ? Data[6] : false;
 #ifdef ENABLE_FEAT_F4HWN
-	gEeprom.POWER_ON_DISPLAY_MODE        = (Data[7] < 6)              ? Data[7] : POWER_ON_DISPLAY_MODE_VOLTAGE;
+	gEeprom.POWER_ON_DISPLAY_MODE        = (Data[7] < 7)              ? Data[7] : POWER_ON_DISPLAY_MODE_VOLTAGE;
 #else
 	gEeprom.POWER_ON_DISPLAY_MODE        = (Data[7] < 4)              ? Data[7] : POWER_ON_DISPLAY_MODE_VOLTAGE;
 #endif
@@ -813,7 +813,7 @@ void SETTINGS_WriteBuildOptions(void)
 #ifdef ENABLE_FEAT_F4HWN
 	EEPROM_ReadBuffer(0x1FF0, buf, 8);
 #endif
-	
+
 buf[0] = 0
 #ifdef ENABLE_FMRADIO
     | (1 << 0)

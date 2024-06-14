@@ -34,6 +34,7 @@ enum POWER_OnDisplayMode_t {
 #endif
 	POWER_ON_DISPLAY_MODE_MESSAGE,
 	POWER_ON_DISPLAY_MODE_VOLTAGE,
+	POWER_ON_DISPLAY_MODE_IMAGE,
 	POWER_ON_DISPLAY_MODE_NONE
 };
 typedef enum POWER_OnDisplayMode_t POWER_OnDisplayMode_t;
@@ -105,6 +106,8 @@ enum ACTION_OPT_t {
 	ACTION_OPT_WN,
 	ACTION_OPT_BACKLIGHT,
 #endif
+	ACTION_OPT_SPECTRUM,
+	ACTION_OPT_IMAGE,
 	ACTION_OPT_LEN
 };
 
@@ -147,12 +150,12 @@ typedef struct {
 	uint8_t           NoaaChannel[2];
 #endif
 
-	// The actual VFO index (0-upper/1-lower) that is now used for RX, 
+	// The actual VFO index (0-upper/1-lower) that is now used for RX,
 	// It is being alternated by dual watch, and flipped by crossband
 	uint8_t               RX_VFO;
 
 	// The main VFO index (0-upper/1-lower) selected by the user
-	// 
+	//
 	uint8_t               TX_VFO;
 
 	uint8_t               field7_0xa;
@@ -194,7 +197,7 @@ typedef struct {
 
 	uint8_t               field29_0x26;
 	uint8_t               field30_0x27;
-	
+
 	uint8_t               field37_0x32;
 	uint8_t               field38_0x33;
 
@@ -232,7 +235,7 @@ typedef struct {
 	char                  DTMF_GROUP_CALL_CODE;
 	uint8_t               DTMF_DECODE_RESPONSE;
 	uint8_t               DTMF_auto_reset_time;
-#endif	
+#endif
 	uint16_t              DTMF_PRELOAD_TIME;
 	uint16_t              DTMF_FIRST_CODE_PERSIST_TIME;
 	uint16_t              DTMF_HASH_CODE_PERSIST_TIME;

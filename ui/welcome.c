@@ -27,6 +27,7 @@
 #include "ui/status.h"
 #include "version.h"
 #include "bitmaps.h"
+#include "image_boot.h"
 
 void UI_DisplayReleaseKeys(void)
 {
@@ -58,7 +59,7 @@ void UI_DisplayWelcome(void)
 #ifdef ENABLE_FEAT_F4HWN
 	ST7565_BlitStatusLine();
 	ST7565_BlitFullScreen();
-	
+
 	if (gEeprom.POWER_ON_DISPLAY_MODE == POWER_ON_DISPLAY_MODE_NONE || gEeprom.POWER_ON_DISPLAY_MODE == POWER_ON_DISPLAY_MODE_SOUND) {
 		ST7565_FillScreen(0x00);
 #else
@@ -66,68 +67,34 @@ void UI_DisplayWelcome(void)
 		ST7565_FillScreen(0xFF);
 #endif
 	} else {
-		memset(WelcomeString0, 0, sizeof(WelcomeString0));
-		memset(WelcomeString1, 0, sizeof(WelcomeString1));
+		if (gEeprom.POWER_ON_DISPLAY_MODE == POWER_ON_DISPLAY_MODE_IMAGE) {
 
-		sprintf(WelcomeString1, "%u.%02uV %u%%",
-				gBatteryVoltageAverage / 100,
-				gBatteryVoltageAverage % 100,
-				BATTERY_VoltsToPercent(gBatteryVoltageAverage));
-
-		if (gEeprom.POWER_ON_DISPLAY_MODE == POWER_ON_DISPLAY_MODE_VOLTAGE)
-		{
-			strcpy(WelcomeString0, "VOLTAGE");
-		}
-		else if(gEeprom.POWER_ON_DISPLAY_MODE == POWER_ON_DISPLAY_MODE_ALL)
-		{
-			EEPROM_ReadBuffer(0x0EB0, WelcomeString0, 16);
-		}
-		else if(gEeprom.POWER_ON_DISPLAY_MODE == POWER_ON_DISPLAY_MODE_MESSAGE)
-		{
-			EEPROM_ReadBuffer(0x0EB0, WelcomeString0, 16);
-			EEPROM_ReadBuffer(0x0EC0, WelcomeString1, 16);
-
-			if(strlen(WelcomeString1) == 0)
-			{
-				strcpy(WelcomeString1, "BIENVENUE");
-			}
-		}
-
-		UI_PrintString(WelcomeString0, 0, 127, 0, 10);
-		UI_PrintString(WelcomeString1, 0, 127, 2, 10);
-
-#ifdef ENABLE_FEAT_F4HWN
-		UI_PrintStringSmallNormal(Version, 0, 128, 4);
-
-		for (uint8_t i = 0; i < 128; i++)
-		{
-			gFrameBuffer[3][i] ^= 0x80;
-		}
-
-		for (uint8_t i = 18; i < 110; i++)
-		{
-			gFrameBuffer[4][i] ^= 0xFF;
-		}
-
-		#ifdef ENABLE_SPECTRUM
-			#ifdef ENABLE_FMRADIO
-					UI_PrintStringSmallNormal(Based, 0, 127, 5);
-					UI_PrintStringSmallNormal(Credits, 0, 127, 6);
-			#else
-					UI_PrintStringSmallNormal("Bandscope  ", 0, 127, 5);
-					memcpy(gFrameBuffer[5] + 95, BITMAP_Ready, sizeof(BITMAP_Ready));
-					UI_PrintStringSmallNormal("Broadcast  ", 0, 127, 6);
-			#endif
-		#else
-			UI_PrintStringSmallNormal("Bandscope  ", 0, 127, 5);
-			UI_PrintStringSmallNormal("Broadcast  ", 0, 127, 6);
-			memcpy(gFrameBuffer[6] + 95, BITMAP_Ready, sizeof(BITMAP_Ready));
-		#endif
-#else
-		UI_PrintStringSmallNormal(Version, 0, 127, 6);
+#ifdef ENABLE_BITMAP_WELCOME
+			UI_DrawFullScreenImage((uint8_t*)BITMAP_ECRAN_ACCEUIL);
 #endif
+		} else {
+			memset(WelcomeString0, 0, sizeof(WelcomeString0));
+			memset(WelcomeString1, 0, sizeof(WelcomeString1));
 
-		//ST7565_BlitStatusLine();  // blank status line : I think it's useless
+			if (gEeprom.POWER_ON_DISPLAY_MODE == POWER_ON_DISPLAY_MODE_VOLTAGE)
+			{
+				strcpy(WelcomeString0, "VOLTAGE");
+				sprintf(WelcomeString1, "%u.%02uV %u%%",
+					gBatteryVoltageAverage / 100,
+					gBatteryVoltageAverage % 100,
+					BATTERY_VoltsToPercent(gBatteryVoltageAverage));
+			}
+			else
+			{
+				EEPROM_ReadBuffer(0x0EB0, WelcomeString0, 16);
+				EEPROM_ReadBuffer(0x0EC0, WelcomeString1, 16);
+			}
+
+			UI_PrintString(WelcomeString0, 0, 127, 0, 10);
+			UI_PrintString(WelcomeString1, 0, 127, 2, 10);
+			UI_PrintStringSmallNormal(Version, 0, 128, 6);
+		}
+		ST7565_BlitStatusLine();  // blank status line
 		ST7565_BlitFullScreen();
 	}
 }
